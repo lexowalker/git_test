@@ -21,14 +21,16 @@ EDITS = {
         (49.74, 62.88),   # And those are very useful… watching this negativity just play out,
         (98.42, 114.94),  # And so that's when… observe the thoughts go by and the feelings go by
     ],
-    'short2': [  # Who Is Watching? — the experience and the insight
-        (173.30, 178.98),  # who is it that's observing? Who's watching this?
+    'short2': [  # Who Is Watching? — the experience and the insight (no named references)
+        (173.30, 178.98),  # who is it that's observing? Who's watching this?   (cold open)
         (63.12, 71.04),    # And then you can also feel it in your body… giving up,
         (72.08, 97.62),    # And you just feel like no matter what you do… despair and just bad news.
         (121.54, 128.50),  # you can focus on the body… You can feel your heart sink.
         (138.46, 143.00),  # But just feel the despair. Just feel it. It's just like, oh, God.
         (147.08, 157.56),  # And you can feel that… a dark cloud… heavier than that.
-        (158.18, 203.44),  # someone who talked about this really well was Eckhart Tolle… bodily sensations and you.
+        (173.30, 178.98),  # who is it that's observing? Who's watching this?   (callback, now answered)
+        (190.48, 191.24),  # and then boom,
+        (193.60, 203.44),  # all of a sudden one day, you realize there's a space… bodily sensations and you.
     ],
 }
 FIXES = {'Eckert': 'Eckhart', 'Tolly,': 'Tolle,', 'Out': 'out', 'their': "they're", 'Who\'s': "Who's"}
@@ -96,6 +98,10 @@ def main(src, sid):
             w['w'] = w['w'][:-1] + '.'
         if w['w'] == 'observing' and i + 1 < len(out_words) and out_words[i + 1]['w'] == "Who's":
             w['w'] = 'observing?'
+    # "and then boom," flows straight into "all of a sudden…" — one sentence across that seam
+    for i, w in enumerate(out_words[:-1]):
+        if w['w'] == 'boom.':
+            w['w'] = 'boom,'; out_words[i + 1]['w'] = out_words[i + 1]['w'].lower()
     dur = round(t_out, 3)
     with open(os.path.join(ROOT, 'data', f'{sid}.js'), 'w') as fh:
         fh.write(f'window.AUDIO_DUR = {dur};\nwindow.WORDS = {json.dumps(out_words)};\n')

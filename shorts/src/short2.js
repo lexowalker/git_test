@@ -1,17 +1,17 @@
-// SHORT 2 — "Who Is Watching?" (≈111 s). The felt weight of despair, Eckhart Tolle's question, the space.
+// SHORT 2 — "Who Is Watching?" (≈83 s). The felt weight of despair, the question, the space between your thoughts and you.
 'use strict';
 
 G.AUDIO_END = window.AUDIO_DUR; G.DURATION = window.AUDIO_DUR + 3.0;
-SUBS.build(window.WORDS, ['observing', 'watching', 'body', 'hopeless', 'helpless', 'failure', 'despair', 'heart', 'sink', 'sinking', 'feel', 'cloud', 'heavier', 'eckhart', 'tolle', 'boom', 'space', 'thoughts', 'sensations']);
+SUBS.build(window.WORDS, ['observing', 'watching', 'body', 'hopeless', 'helpless', 'failure', 'despair', 'heart', 'sink', 'sinking', 'feel', 'cloud', 'heavier', 'boom', 'space', 'thoughts', 'sensations']);
 SUBS.hidden = t => t > window.AUDIO_DUR + 0.2;
 
 const C2 = {
   who1: cue('who'), watching1: cueP("who's watching this"), body: cue('body'), hopeless: cue('hopeless'), helpless: cue('helpless'), givingUp: cue('giving'),
   noMatter: cueP('no matter'), neverWork: cue('never'), world: cue('world'), failure: cue('failure'), noOne: cueP('no one'), success: cue('success'), ahead: cue('ahead', 2), despair: cue('despair'), badNews: cueP('bad news'),
   focus: cue('focus'), sinking: cue('sinking'), sink: cue('sink'), feelDespair: cueP('but just feel'), justFeel: cueP('just feel it'), god: cue('god'),
-  cloud: cue('cloud'), heavier: cue('heavier'), someone: cue('someone'), andSo: cueP('and so someone'), tolle: cue('tolle'), depressed: cue('depressed'), wondered: cue('wondered'),
-  observing2: cue('observing', 2), watching2: cueP("who's watching this", 2), whoWants: cueP('who is it that wants'), whoAmI: cueP('who am i'), describes: cue('describes'),
-  boom: cue('boom'), realized: cue('realized'), space1: cue('space'), space2: cue('space', 2), space3: cue('space', 3), sensations: cue('sensations'), end: window.AUDIO_DUR,
+  cloud: cue('cloud'), heavier: cue('heavier'),
+  who2: cueP('who is it', 2), observing2: cue('observing', 2), watching2: cueP("who's watching this", 2),
+  boom: cue('boom'), space1: cue('space'), space2: cue('space', 2), space3: cue('space', 3), sensations: cue('sensations'), end: window.AUDIO_DUR,
 };
 
 // gold eye (the watcher) — a gold-palette take on the film's eye glyph
@@ -136,7 +136,7 @@ G.scene(C2.focus - 0.4, C2.cloud - 1.2, (ctx, t) => {
 }, { type: 'fade', dur: 0.4 });
 
 // ---------- 5. a dark cloud — but heavier ----------
-G.scene(C2.cloud - 1.4, C2.andSo + 0.1, (ctx, t) => {
+G.scene(C2.cloud - 1.4, C2.who2 + 0.1, (ctx, t) => {
   slate(ctx);
   const heavy = ss(t, C2.heavier - 0.4, C2.heavier + 0.8);
   const drop = 60 + E.outBack(heavy) * 60;
@@ -156,83 +156,29 @@ G.scene(C2.cloud - 1.4, C2.andSo + 0.1, (ctx, t) => {
   seriesTag(ctx, 'THE OBSERVING CENTER', 0.0);
 }, { type: 'fade', dur: 0.4 });
 
-// ---------- 6. Eckhart Tolle: a dark night, and a question ----------
-function room(ctx, t, o = {}) {
-  ctx.fillStyle = vgrad(ctx, 0, H, [[0, '#14122a'], [1, '#0a0918']]); ctx.fillRect(0, 0, W, H);
-  // window onto the night world
-  ctx.save(); ctx.beginPath(); ctx.rect(300, 260, 480, 560); ctx.clip();
-  ctx.fillStyle = vgrad(ctx, 260, 820, [[0, '#071344'], [1, '#2c5cc0']]); ctx.fillRect(300, 260, 480, 560);
-  stars(ctx, t, { seed: 12, n: 70, x: 300, y: 260, w: 480, h: 500 });
-  drawMoon(ctx, 660, 380, 34);
+// ---------- 6. the question returns: who is watching the cloud? ----------
+G.scene(C2.who2 - 0.3, C2.boom - 0.05, (ctx, t) => {
+  slate(ctx);
+  // the heavy stone still sits on the small figure…
+  bodyOutline(ctx, BODY.x, 1320, 0.85, { fill: 'rgba(233,230,248,0.06)', stroke: CHALK, slump: 1 });
+  ctx.save(); ctx.globalAlpha = 1 - ss(t, C2.watching2, C2.watching2 + 0.8) * 0.15;
+  blob(ctx, [[300, 590], [360, 470], [520, 440], [720, 480], [790, 590], [700, 660], [420, 665]], '#3c3a4a', { w: 5, n: 5, stroke: CHALK });
   ctx.restore();
-  ctx.strokeStyle = '#2a2240'; ctx.lineWidth = 18; ctx.strokeRect(300, 260, 480, 560); ctx.lineWidth = 8; ctx.beginPath(); ctx.moveTo(540, 260); ctx.lineTo(540, 820); ctx.moveTo(300, 540); ctx.lineTo(780, 540); ctx.stroke();
-  ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createLinearGradient(0, 820, 0, 1500); g.addColorStop(0, 'rgba(90,120,220,0.18)'); g.addColorStop(1, 'rgba(90,120,220,0)'); ctx.fillStyle = g;
-  ctx.beginPath(); ctx.moveTo(300, 820); ctx.lineTo(780, 820); ctx.lineTo(900, 1500); ctx.lineTo(180, 1500); ctx.closePath(); ctx.fill(); ctx.restore();
-  // bed edge
-  shape(ctx, [[60, 1260], [1020, 1260], [1020, 1340], [60, 1340]], '#2a2448', { w: 3, stroke: '#0a0814' });
-}
-function seatedSide(ctx, x, y, s, col, headDown = 0) {
-  // a figure sitting on the bed's edge, seen from the front-ish, head bowed
-  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
-  blob(ctx, [[-70, 0], [-60, -200], [60, -200], [70, 0]], col, { w: 3, stroke: '#0a0814', n: 4 });
-  limb(ctx, [[-55, -180], [-80, -90], [-30, -40]], [36, 30, 26], col, 3);
-  limb(ctx, [[55, -180], [80, -90], [30, -40]], [36, 30, 26], col, 3);
-  shape(ctx, [[-60, 0], [-50, 160], [-10, 160], [-10, 0]], col, { w: 3, stroke: '#0a0814' }); shape(ctx, [[60, 0], [50, 160], [10, 160], [10, 0]], col, { w: 3, stroke: '#0a0814' });
-  ctx.beginPath(); ctx.ellipse(0, -240 + headDown * 30, 42, 48, 0, 0, TAU); ctx.fillStyle = col; ctx.fill(); ctx.strokeStyle = '#0a0814'; ctx.lineWidth = 3; ctx.stroke();
-  ctx.restore();
-}
-G.scene(C2.andSo - 0.3, C2.describes - 0.2, (ctx, t) => {
-  room(ctx, t);
-  const pull = ss(t, C2.observing2 - 0.5, C2.whoAmI + 1.5);
-  const bowed = 1 - ss(t, C2.observing2 - 0.3, C2.observing2 + 0.8);
-  seatedSide(ctx, 540, 1250, 1.2, '#2d2850', bowed);
-  // the thought hangs over him
-  const th = ss(t, C2.depressed - 0.3, C2.depressed + 0.6);
-  if (th > 0) cloud(ctx, 540, 620 - pull * 120, 640, 200, { seed: 88, fill: '#2a2448', text: 'I can’t live with myself', textSize: 44, alpha: th * (1 - pull * 0.35) });
-  // the watcher: a gold outline that is not the thought, looking at it
-  const wk = ss(t, C2.observing2 - 0.2, C2.watching2 + 0.6);
+  // …and then a second, larger presence: awareness, looking at all of it from outside it
+  const wk = ss(t, C2.observing2 - 0.6, C2.observing2 + 0.6);
   if (wk > 0) {
     ctx.save(); ctx.globalAlpha = wk; ctx.shadowColor = 'rgba(255,200,90,0.9)'; ctx.shadowBlur = 30;
-    meditator(ctx, 540, 1110, 1.0, { sil: 'rgba(255,214,110,0.0)', lw: 0.001 });
+    bodyOutline(ctx, BODY.x, 1360, lerp(0.95, 1.35, E.out(wk)), { fill: 'rgba(255,214,110,0.05)', stroke: 'rgba(255,214,110,0.95)', lw: 6 });
     ctx.restore();
-    ctx.save(); ctx.globalAlpha = wk;
-    inkCircle(ctx, 540, 1250 - 290 * 1.2, 70, { w: 4, color: '#ffd76a', seed: 2 });
-    glow(ctx, 540, 1250 - 290 * 1.2, 220, GOLDG, 0.7 * wk);
-    ctx.restore();
-    inkArrow(ctx, [[540, 1250 - 360 * 1.2], [540, 720 - pull * 120]], { p: ss(t, C2.watching2 - 0.2, C2.watching2 + 0.6), w: 4, color: '#ffd76a', dash: [12, 10], seed: 4 });
+    const ey = 1360 - 690 * lerp(0.95, 1.35, E.out(wk));
+    goldEye(ctx, BODY.x, ey, 0.32 * wk, { open: wk, look: 0 });
+    inkArrow(ctx, [[BODY.x - 150, ey + 40], [430, 470]], { p: ss(t, C2.observing2, C2.observing2 + 0.8), w: 4, color: '#ffd76a', dash: [12, 10], seed: 4 });
+    inkArrow(ctx, [[BODY.x + 150, ey + 40], [BODY.x + 170, 900]], { p: ss(t, C2.watching2 - 0.2, C2.watching2 + 0.6), w: 4, color: '#ffd76a', dash: [12, 10], seed: 5 });
   }
-  // the question itself
-  const q = ss(t, C2.whoWants - 0.1, C2.whoAmI + 0.6);
-  if (q > 0) {
-    label(ctx, 'thought', 860, 560 - pull * 120, ss(t, C2.whoWants, C2.whoWants + 0.6), { size: 44, color: '#c9b8ff', fam: 'Scrawl', style: 'bold' });
-    label(ctx, '…and who is watching it?', 540, 800, ss(t, C2.whoAmI - 0.2, C2.whoAmI + 1.6), { size: 52, color: '#ffe6a6', fam: 'Garamond', style: 'italic 600' });
-  }
-  // name card
-  const nc = env(t, C2.someone, C2.depressed + 0.6, 0.5, 0.5);
-  if (nc > 0) {
-    ctx.save(); ctx.globalAlpha = nc;
-    shape(ctx, [[230, 140], [850, 140], [850, 250], [230, 250]], 'rgba(244,238,224,0.95)', { w: 3 });
-    ctx.restore();
-    label(ctx, 'Eckhart Tolle', 540, 216, ss(t, C2.tolle - 0.6, C2.tolle + 0.3), { size: 64, fam: 'Garamond', style: '600', color: P.navy, alpha: nc });
-  }
-  subBand(ctx);
+  label(ctx, 'the cloud', 860, 520, ss(t, C2.who2, C2.who2 + 0.8), { size: 48, color: '#c9b8ff', fam: 'Scrawl', style: 'bold' });
+  label(ctx, 'who is watching it?', 540, 250, ss(t, C2.watching2 - 0.3, C2.watching2 + 0.9), { size: 70, color: '#ffe6a6', fam: 'Garamond', style: 'italic 600', glow: 'rgba(255,200,90,0.6)' });
+  seriesTag(ctx, 'THE OBSERVING CENTER', 0);
 }, { type: 'fade', dur: 0.5 });
-
-// ---------- 7. "he describes it much better" — the book ----------
-G.scene(C2.describes - 0.4, C2.boom - 0.05, (ctx, t) => {
-  paperV(ctx);
-  const k = ss(t, C2.describes - 0.3, C2.describes + 0.5, E.outBack);
-  ctx.save(); ctx.translate(540, 720); ctx.scale(k, k); ctx.rotate(-0.04);
-  shape(ctx, [[-230, -330], [230, -330], [230, 330], [-230, 330]], '#1f3a6a', { w: 4 });
-  shape(ctx, [[-230, -330], [-200, -330], [-200, 330], [-230, 330]], '#14284c', { w: 3 });
-  glow(ctx, 20, -40, 160, GOLDG, 0.8, 'source-over');
-  ctx.fillStyle = '#fff3c4'; ctx.beginPath(); ctx.arc(20, -40, 22, 0, TAU); ctx.fill();
-  ctx.font = font(54, 'Garamond', '600'); ctx.textAlign = 'center'; ctx.fillStyle = '#f4ecd8';
-  ctx.fillText('The Power', 20, 140); ctx.fillText('of Now', 20, 200);
-  ctx.font = font(34, 'Garamond', 'italic'); ctx.fillText('Eckhart Tolle', 20, 280);
-  ctx.restore();
-  label(ctx, 'he tells it best', 540, 260, ss(t, C2.describes, C2.describes + 1.0), { size: 56 });
-}, { type: 'fade', dur: 0.4 });
 
 // ---------- 8. boom — the space between your thoughts and you ----------
 G.scene(C2.boom - 0.1, G.DURATION, (ctx, t) => {
