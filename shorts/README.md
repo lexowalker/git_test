@@ -11,7 +11,7 @@ Two 1080×1920 shorts cut from a 3:24 talk on the "observing center". They use t
 **Short 1:** 0.00–18.40 (the aphorism) · 25.84–36.08 (life is always teaching) · 36.32–48.78 (the message isn't what we want to hear) · 49.74–62.88 (the most mileage; watch it play out) · 98.42–114.94 (preliminary work; thoughts and feelings go by).
 
 **Short 2:** 173.30–178.98 (cold open: "who is it that's observing? Who's watching this?") · 63.12–71.04 · 72.08–97.62 (despair in the body and its story) · 121.54–128.50 (heart sinking) · 138.46–143.00 (just feel it) · 147.08–157.56 (dark cloud, heavier) · 173.30–178.98 (the question returns) · 190.48–191.24 ("and then boom,") · 193.60–203.44 (the space).
-No named references: the passage naming Eckhart Tolle and the story built around him are left out by request.
+No named references: the passage that names a teacher, and the story around it, is left out by request.
 
 The cuts are snapped to real silences and joined with 0.32 s gaps and micro-fades. Loudness is normalised for YouTube. All cut points are listed in `tools/build_edit.py`.
 
