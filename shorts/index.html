@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Observing Center Shorts</title>
+<style>
+  @font-face { font-family: "Hand"; src: url(../ghost-green-eye/fonts/patrick-hand-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Scrawl"; src: url(../ghost-green-eye/fonts/caveat-latin-700-normal.woff2) format("woff2"); font-weight: 700; }
+  @font-face { font-family: "Garamond"; src: url(../ghost-green-eye/fonts/cormorant-garamond-latin-400-italic.woff2) format("woff2"); font-weight: 400; font-style: italic; }
+  @font-face { font-family: "Garamond"; src: url(../ghost-green-eye/fonts/cormorant-garamond-latin-600-italic.woff2) format("woff2"); font-weight: 600; font-style: italic; }
+  @font-face { font-family: "Garamond"; src: url(../ghost-green-eye/fonts/cormorant-garamond-latin-600-normal.woff2) format("woff2"); font-weight: 600; font-style: normal; }
+  @font-face { font-family: "Cinzel"; src: url(../ghost-green-eye/fonts/cinzel-latin-700-normal.woff2) format("woff2"); font-weight: 700; }
+  @font-face { font-family: "Sub"; src: url(fonts/nunito-latin-900-normal.woff2) format("woff2"); font-weight: 900; }
+  @font-face { font-family: "Sub"; src: url(fonts/nunito-latin-800-normal.woff2) format("woff2"); font-weight: 800; }
+  html, body { margin: 0; background: #05060c; }
+  body.play { display: flex; flex-direction: column; align-items: center; }
+  body.play canvas { height: 92vh; width: auto; }
+  #bar { color: #9aa; font: 14px system-ui; padding: 6px; display: none; }
+  body.play #bar { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<div id="bar"><button id="go">Play</button> <span id="tc"></span></div>
+<script>
+  window.VW = 1080; window.VH = 1920;
+  const SHORT = new URLSearchParams(location.search).get('s') || 'short1';
+  const scripts = ['../ghost-green-eye/src/core.js', '../ghost-green-eye/src/art.js', '../ghost-green-eye/src/people.js',
+    '../ghost-green-eye/src/diagrams.js', `data/${SHORT}.js`, 'src/subs.js', 'src/kit.js', `src/${SHORT}.js`];
+  window.loaded = scripts.reduce((p, src) => p.then(() => new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error(src)); document.body.appendChild(s);
+  })), Promise.resolve());
+</script>
+<script>
+  const params = new URLSearchParams(location.search);
+  const cv = document.getElementById('c');
+  const ctx = cv.getContext('2d');
+  window.ready = (async () => {
+    await window.loaded;
+    const fams = ['24px Hand', 'bold 24px Scrawl', 'italic 24px Garamond', 'italic 600 24px Garamond', '600 24px Garamond', '700 24px Cinzel', '900 24px Sub', '800 24px Sub'];
+    await Promise.all(fams.map(f => document.fonts.load(f)));
+    await document.fonts.ready;
+    G.init();
+    return true;
+  })();
+  window.renderFrame = (t) => { G.frame(ctx, t); SUBS.draw(ctx, t); return true; };
+  if (params.has('render')) document.body.className = 'render';
+  else {
+    document.body.className = 'play';
+    const aud = new Audio(`out/${SHORT}_narration.m4a`);
+    window.ready.then(() => {
+      window.renderFrame(parseFloat(params.get('t') || '0'));
+      document.getElementById('go').onclick = () => { aud.currentTime = parseFloat(params.get('t') || '0'); aud.play(); loop(); };
+    });
+    let t0 = null;
+    function loop() {
+      const t = aud.ended ? (t0 ??= performance.now(), G.AUDIO_END + (performance.now() - t0) / 1000) : aud.currentTime;
+      window.renderFrame(t); document.getElementById('tc').textContent = t.toFixed(2) + 's';
+      if (t < G.DURATION) requestAnimationFrame(loop);
+    }
+  }
+</script>
+</body>
+</html>

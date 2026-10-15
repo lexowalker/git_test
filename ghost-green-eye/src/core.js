@@ -1,7 +1,7 @@
 // Ghost Green-Eye — core engine: timing, easing, ink-drawing primitives, textures, scene compositor.
 'use strict';
 
-const W = 1920, H = 1080;
+const W = window.VW || 1920, H = window.VH || 1080;  // shorts set VW/VH for vertical
 const TAU = Math.PI * 2;
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const lerp = (a, b, t) => a + (b - a) * t;
